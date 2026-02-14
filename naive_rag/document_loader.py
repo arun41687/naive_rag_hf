@@ -67,9 +67,14 @@ class DocumentLoader:
                 # Add final chunk (always include remaining text)
                 final_chunk = text[start:]
                 # If there are previous chunks and final chunk is very small,
-                # merge it with the last chunk
+                # merge it with the last chunk if the result is reasonable
                 if chunks and len(final_chunk) < self.chunk_overlap:
-                    chunks[-1] = chunks[-1] + final_chunk
+                    merged_size = len(chunks[-1]) + len(final_chunk)
+                    # Only merge if result won't be too large
+                    if merged_size <= self.chunk_size + self.chunk_overlap:
+                        chunks[-1] = chunks[-1] + final_chunk
+                    else:
+                        chunks.append(final_chunk)
                 else:
                     chunks.append(final_chunk)
                 break

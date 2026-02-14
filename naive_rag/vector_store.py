@@ -52,8 +52,8 @@ class VectorStoreManager:
         
         # Generate IDs if not provided
         if ids is None:
-            # Use timestamp + index to ensure uniqueness across multiple calls
-            timestamp = int(time.time() * 1000000)  # microseconds
+            # Use timestamp in milliseconds + index to ensure uniqueness across multiple calls
+            timestamp = int(time.time() * 1000)  # milliseconds
             ids = [f"doc_{timestamp}_{i}" for i in range(len(documents))]
         
         # Add to collection
