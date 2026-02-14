@@ -58,9 +58,18 @@ class DocumentLoader:
         
         chunks = []
         start = 0
+        min_chunk_size = self.chunk_overlap  # Minimum size for a chunk
         
         while start < len(text):
             end = start + self.chunk_size
+            
+            # Check if remaining text is too small for a meaningful chunk
+            if end >= len(text):
+                # Add final chunk if it's large enough
+                if len(text) - start >= min_chunk_size:
+                    chunks.append(text[start:])
+                break
+            
             chunk = text[start:end]
             chunks.append(chunk)
             

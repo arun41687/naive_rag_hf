@@ -28,23 +28,21 @@ def main():
     # Create a sample document file
     sample_file = "/tmp/sample_document.txt"
     with open(sample_file, 'w') as f:
-        f.write("""
-        Retrieval-Augmented Generation (RAG) is a technique that combines 
-        information retrieval with text generation. It works by first retrieving 
-        relevant documents from a knowledge base, then using those documents as 
-        context for a language model to generate responses.
-        
-        The RAG approach has several advantages:
-        1. It grounds the model's responses in factual information
-        2. It allows updating the knowledge base without retraining the model
-        3. It can provide citations and source information
-        4. It reduces hallucinations by constraining generation to retrieved context
-        
-        RAG systems typically consist of three main components:
-        - A document store or vector database
-        - An embedding model for semantic search
-        - A language model for generation
-        """)
+        f.write(
+            "Retrieval-Augmented Generation (RAG) is a technique that combines "
+            "information retrieval with text generation. It works by first retrieving "
+            "relevant documents from a knowledge base, then using those documents as "
+            "context for a language model to generate responses.\n\n"
+            "The RAG approach has several advantages:\n"
+            "1. It grounds the model's responses in factual information\n"
+            "2. It allows updating the knowledge base without retraining the model\n"
+            "3. It can provide citations and source information\n"
+            "4. It reduces hallucinations by constraining generation to retrieved context\n\n"
+            "RAG systems typically consist of three main components:\n"
+            "- A document store or vector database\n"
+            "- An embedding model for semantic search\n"
+            "- A language model for generation"
+        )
     
     print(f"\nCreated sample document: {sample_file}")
     
@@ -67,8 +65,8 @@ def main():
         print(f"\nQ: {question}")
         print("-" * 60)
         
-        answer = pipeline.query(question, n_results=3)
-        print(f"A: {answer}")
+        result = pipeline.query(question, n_results=3)
+        print(f"A: {result['answer']}")
     
     # Cleanup
     os.remove(sample_file)

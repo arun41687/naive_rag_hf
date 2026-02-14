@@ -58,8 +58,8 @@ documents = [
 pipeline.add_documents(documents)
 
 # Query the pipeline
-answer = pipeline.query("What is Python?")
-print(answer)
+result = pipeline.query("What is Python?")
+print(result['answer'])
 ```
 
 ### Advanced Usage
@@ -80,13 +80,13 @@ pipeline = RAGPipeline(config)
 pipeline.add_document_files(["document1.txt", "document2.txt"])
 
 # Query with context
-answer, context = pipeline.query(
+result = pipeline.query(
     "What is RAG?",
     n_results=3,
     return_context=True
 )
-print(f"Answer: {answer}")
-print(f"Context: {context}")
+print(f"Answer: {result['answer']}")
+print(f"Context: {result['context']}")
 ```
 
 ## Configuration
@@ -155,7 +155,7 @@ Main class for the RAG pipeline.
 - `__init__(config: Optional[Config] = None)`: Initialize the pipeline
 - `add_documents(documents: List[str])`: Add text documents to knowledge base
 - `add_document_files(file_paths: List[str])`: Add documents from files
-- `query(question: str, n_results: int = 3, return_context: bool = False)`: Query the pipeline
+- `query(question: str, n_results: int = 3, return_context: bool = False)`: Query the pipeline, returns dict with 'answer' and optionally 'context' keys
 - `retrieve(query: str, n_results: int = 3)`: Retrieve relevant documents
 - `clear_knowledge_base()`: Clear all documents
 

@@ -83,9 +83,9 @@ class LLMWrapper:
             Generated text
         """
         # Use defaults if not provided
-        max_new_tokens = max_new_tokens or self.max_new_tokens
-        temperature = temperature or self.temperature
-        top_p = top_p or self.top_p
+        max_new_tokens = max_new_tokens if max_new_tokens is not None else self.max_new_tokens
+        temperature = temperature if temperature is not None else self.temperature
+        top_p = top_p if top_p is not None else self.top_p
         
         # Tokenize input
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)

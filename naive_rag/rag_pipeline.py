@@ -113,7 +113,7 @@ Answer:"""
         
         return prompt
     
-    def query(self, question: str, n_results: int = 3, return_context: bool = False) -> str:
+    def query(self, question: str, n_results: int = 3, return_context: bool = False):
         """
         Query the RAG pipeline
         
@@ -123,13 +123,16 @@ Answer:"""
             return_context: Whether to return retrieved context along with answer
             
         Returns:
-            Generated answer (or tuple of answer and context if return_context=True)
+            Dictionary with 'answer' and optionally 'context' keys
         """
         # Retrieve relevant documents
         context_docs, distances = self.retrieve(question, n_results=n_results)
         
         if not context_docs:
-            return "No relevant documents found in the knowledge base."
+            result = {"answer": "No relevant documents found in the knowledge base."}
+            if return_context:
+                result["context"] = []
+            return result
         
         # Generate prompt
         prompt = self.generate_prompt(question, context_docs)
@@ -137,10 +140,11 @@ Answer:"""
         # Generate answer
         answer = self.llm.generate(prompt)
         
+        result = {"answer": answer}
         if return_context:
-            return answer, context_docs
+            result["context"] = context_docs
         
-        return answer
+        return result
     
     def clear_knowledge_base(self):
         """Clear all documents from the knowledge base"""
