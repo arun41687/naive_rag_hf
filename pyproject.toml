@@ -1,0 +1,30 @@
+[project]
+name = "naive-rag-hf"
+version = "0.1.0"
+description = "A naive RAG (Retrieval-Augmented Generation) pipeline using HuggingFace Microsoft/Phi3-mini-4k-instruct"
+authors = [
+    {name = "arun41687"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+dependencies = [
+    "transformers>=4.35.0",
+    "torch>=2.0.0",
+    "sentence-transformers>=2.2.0",
+    "langchain>=0.1.0",
+    "langchain-community>=0.0.10",
+    "chromadb>=0.4.0",
+    "huggingface-hub>=0.19.0",
+    "numpy>=1.24.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/arun41687/naive_rag_hf"
+Repository = "https://github.com/arun41687/naive_rag_hf"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
