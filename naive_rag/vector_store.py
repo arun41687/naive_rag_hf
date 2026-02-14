@@ -1,5 +1,6 @@
 """Vector store manager for document embeddings and retrieval"""
 
+import time
 from typing import List, Optional, Tuple
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -52,7 +53,6 @@ class VectorStoreManager:
         # Generate IDs if not provided
         if ids is None:
             # Use timestamp + index to ensure uniqueness across multiple calls
-            import time
             timestamp = int(time.time() * 1000000)  # microseconds
             ids = [f"doc_{timestamp}_{i}" for i in range(len(documents))]
         

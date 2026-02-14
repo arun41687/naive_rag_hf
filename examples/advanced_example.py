@@ -3,6 +3,7 @@ Advanced example with custom configuration and file loading
 """
 
 import os
+import tempfile
 from naive_rag import RAGPipeline
 from naive_rag.config import Config
 
@@ -25,9 +26,9 @@ def main():
     # Initialize pipeline with custom config
     pipeline = RAGPipeline(config)
     
-    # Create a sample document file
-    sample_file = "/tmp/sample_document.txt"
-    with open(sample_file, 'w') as f:
+    # Create a sample document file (cross-platform compatible)
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+        sample_file = f.name
         f.write(
             "Retrieval-Augmented Generation (RAG) is a technique that combines "
             "information retrieval with text generation. It works by first retrieving "
