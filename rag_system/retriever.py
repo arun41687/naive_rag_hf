@@ -1,0 +1,80 @@
+"""Retrieval and re-ranking module."""
+
+from typing import List, Tuple, Dict
+from sentence_transformers import CrossEncoder
+from rag_system.ingestion import VectorStore
+
+class RetrieverWithReranker:
+    """Retrieves and re-ranks relevant chunks."""
+    
+    def __init__(self, vector_store: VectorStore, use_reranker: bool = True):
+        """
+        Initialize retriever with optional re-ranking.
+        
+        Args:
+            vector_store: VectorStore instance
+            use_reranker: Whether to use cross-encoder for re-ranking
+        """
+        self.vector_store = vector_store
+        self.use_reranker = use_reranker
+        
+        if use_reranker:
+            # Cross-encoder for better ranking
+            self.reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-12-v2")
+    
+    def retrieve(self, query: str, top_k: int = 5, rerank: bool = True) -> List[Dict]:
+        """
+        Retrieve relevant chunks.
+        
+        Args:
+            query: Search query
+            top_k: Number of results to return
+            rerank: Whether to apply re-ranking
+            
+        Returns:
+            List of relevant chunks with scores
+        """
+        # Initial retrieval with more candidates for re-ranking
+        initial_k = top_k * 3 if rerank and self.use_reranker else top_k
+        results = self.vector_store.search(query, k=initial_k)
+        
+        if rerank and self.use_reranker:
+            # Re-rank using cross-encoder
+            pairs = [[query, r[0]["text"]] for r in results]
+            scores = self.reranker.predict(pairs)
+            chunks = [r[0] for r in results]
+            
+            # Sort by cross-encoder scores (higher is better)
+            ranked = sorted(
+                zip(chunks, scores),
+                key=lambda x: x[1],
+                reverse=True
+            )
+            
+            # Return top_k
+            return [
+                {
+                    **chunk,
+                    "score": float(score)
+                }
+                for chunk, score in ranked[:top_k]
+            ]
+        else:
+            # Return results sorted by distance
+            return [
+                {
+                    **result[0],
+                    "score": 1.0 / (1.0 + result[1])  # Convert distance to similarity
+                }
+                for result in results[:top_k]
+            ]
+    
+    @staticmethod
+    def format_sources(chunks: List[Dict]) -> List[str]:
+        """Format chunks into source citations."""
+        sources = []
+        for chunk in chunks:
+            sources.append(
+                f"{chunk['document']}, p. {chunk['page']}"
+            )
+        return list(set(sources))  # Remove duplicates
